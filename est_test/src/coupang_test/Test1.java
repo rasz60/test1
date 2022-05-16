@@ -6,104 +6,117 @@ public class Test1 {
 		int[][] delivery1 = { {1, 3, 1}, {3, 5, 0}, {5, 4, 0}, {2, 5, 0} };
 		int[][] delivery2 = { {5, 6, 0}, {1, 3, 1}, {1, 5, 0}, {7, 6, 0}, {3, 7, 1}, {2, 5, 0} };
 
-		System.out.println( solution(delivery1, 6) );
-		System.out.println( solution(delivery2, 7) );
+		System.out.println( "result 1 : " + solution(delivery1, 6) );
+		System.out.println( "result 2 : " +solution(delivery2, 7) );
 
 	}
 
 	public static String solution(int[][] delivery, int n) {
 		
 		String answer = "";
-		char[] tmp = initAnswer(n);
 		
-		int idx1 = 0, idx2 = 0, chk1 = 0, chk2 = 0;
+		// ?로만 채워진 char 배열 생성
+		char[] tmp = new char[n];
+		for ( int i = 0; i < n; i++ ) {
+			tmp[i] = '?';
+		}
 		
 		for ( int i = 0; i < delivery.length; i++ ) {
-			
-			idx1 = delivery[i][0];
-			idx2 = delivery[i][1];
+			// 주문한 두 개 상품의 재고 배열 인덱스 생성
+			int idx1 = delivery[i][0] - 1;
+			int idx2 = delivery[i][1] - 1;
 			
 			// 배송 성공 시
 			if ( delivery[i][2] == 1 ) {
 				
-				chk1 = 1;
-				chk2 = 1;
+				// 해당 상품 모두 재고가 있는 것으로 확인
+				tmp[idx1] = 'O';
+				tmp[idx2] = 'O';
+				
+				// 재고 여부를 다시 세팅
+				tmp = resetArr(delivery, tmp, idx1, idx2);
 				
 			} 
 			
 			// 배송 실패 시
 			else {
 				
+				// 두 개 상품의 재고 여부 확인
 				char val1 = tmp[idx1];
 				char val2 = tmp[idx2];
 				
-				// 두 개 물건 중 재고가 확실히 확인된 물건이 있으면, 다른 상품의 재고는 없는 것으로 확인
+				// 두 개 상품 중 재고가 확실히 확인된 상품이 있으면, 다른 상품의 재고는 없는 것으로 확인
 				if ( val1 == 'O' ) {
-					chk2 = -1;
-				} else if ( val2 == 'O' ) {
-					chk1 = -1;
+					
+					tmp[idx2] = 'X';
+					
 				} 
 				
-				// 둘 다 재고가 확인된 적 없는 상품일 때, 다음 반복 진행
+				else if ( val2 == 'O' ) {
+					
+					tmp[idx1] = 'X';
+					
+				}
+				
+				// 둘 다 재고가 확인된 적 없는 상품일 때
 				else {
+					
+					// 다음 반복 실행
 					continue;
+					
 				}
 				
 			}
 			
-			// chk의 값이 바뀌었을 때, resetArr 메서드 실행
-			if ( chk1 != 0 || chk2 != 0) {
-				int[] params = {idx1, idx2, chk1, chk2};
-				resetArr(delivery ,tmp, params);
-			}
-			
 		}
 		
+		answer = new String(tmp);
 		
 		return answer;
+		
 	}
 	
-	// 상품의 개수만큼 ?로 채워진 char array를 반환하는 메서드
-	public static char[] initAnswer(int length) {
+	// 배송에 성공한 경우, delivery 배열을 처음부터 확인해서 재고 여부를 다시 체크하는 메서드
+	public static char[] resetArr(int[][] arr1, char[] arr2, int idx1, int idx2) {
 		
-		System.out.println("진입");
+		for ( int i = 0; i < arr1.length; i++ ) {
+			
+			// 배송이 실패한 경우
+			if ( arr1[i][2] == 0 ) {
+				
+				// 재고가 확실히 있는 것으로 확인된 상품과 함께 주문된 상품은 재고가 없는 것으로 확인
+				if ( arr1[i][0] == idx1 + 1 || arr1[i][0] == idx2 + 1 ) {
+
+					arr2[arr1[i][1] - 1] = 'X';
+					
+				}
+				
+				else if ( arr1[i][1] == idx1 + 1 || arr1[i][1] == idx2 + 1 ) {
+					
+					arr2[arr1[i][0] - 1] = 'X';
+					
+				} 
+				
+				// 상품 번호가 재고가 확인된 상품 번호와 일치하는 것이 없는 경우, 다음 반복 진행
+				else {
+					
+					// 다음 반복 실행
+					continue;
+					
+				}
+				
+			} 
+			// 배송이 성공한 경우
+			else {
+				
+				// 다음 반복 실행
+				continue;
+			
+			}
 		
-		String init = "";
-		
-		for ( int i = 0; i < length; i++ ) {
-			init = init + "?";
 		}
 		
-		return init.toCharArray();
-	}
-	
-	public static void resetArr(int[][] arr1, char[] arr2, int[] arr3) {
-		
-		int idx1 = arr3[0];
-		int idx2 = arr3[1];
-		int chk1 = arr3[2];
-		int chk2 = arr3[3];
-		
-		if ( chk1 == 1 && chk2 == 1 ) {
-			
-			arr2[idx1] = 'O';
-			arr2[idx2] = 'O';
-			
-		}
-		
-		else if ( chk1 == -1 ) {
-			
-			arr2[idx1] = 'X';
-			
-		}
-		
-		else if ( chk2 == -1 ) {
-			
-			arr2[idx2] = 'X';
-			
-		}
-		
-		
+		return arr2;
 		
 	}
 }
