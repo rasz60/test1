@@ -9,6 +9,7 @@ public class Test2 {
 		System.out.println( "result 3 : " + solution(19L) );
 		System.out.println( "result 4 : " + solution(2047L) );
 		System.out.println( "result 5 : " + solution(988027L) );
+		
 	}
 
 	public static String solution(long n) {
@@ -34,14 +35,6 @@ public class Test2 {
 					// 반복을 종료
 					break;
 					
-				} 
-				
-				// 두 값이 소수가 아닐 경우
-				else {
-					
-					// 다음 반복 실행
-					continue;
-				
 				}
 			
 			} 

@@ -58,14 +58,6 @@ public class Test1 {
 					
 				}
 				
-				// 둘 다 재고가 확인된 적 없는 상품일 때
-				else {
-					
-					// 다음 반복 실행
-					continue;
-					
-				}
-				
 			}
 			
 		}
