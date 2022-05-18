@@ -118,52 +118,35 @@ public class Test1 {
 		for ( String str : scores ) {
 			
 			// String에 포함된 A와 F가 몇개인지 확인
-			int count_a = (int)str.chars().filter(c -> c == 'A').count();
-			int count_f = (int)str.chars().filter(c -> c == 'F').count();
+			int count_a = count(str, 'A');
+			int count_f = count(str, 'F');
+			
+			// F가 2개 이상이면 불합격
+			if ( count_f > 1 ) {
+				// 다음 반복 실행
+				continue;
+			}
 			
 			// A가 2개 이상이면 합격
-			if ( count_a > 2 ) {
+			else if ( count_a > 1 ) {
 				answer++;
 				// 다음 반복 실행
 				continue;
 			} 
 			
-			// F가 2개 이상이면 불합격
-			else if ( count_f > 2 ) {
-				// 다음 반복 실행
-				continue;
-			}
-			
 			// A나 F가 2개 이상이 아닐 때
 			else {
-				// 나머지 점수의 개수를 구함
-				int count_b = (int)str.chars().filter(c -> c == 'B').count();
-				int count_c = (int)str.chars().filter(c -> c == 'C').count();
-				int count_d = (int)str.chars().filter(c -> c == 'D').count();
-				int count_e = (int)str.chars().filter(c -> c == 'E').count();
-				
-				// str 포함된 문자 중에서 가장 큰 점수를 max로 지정
-				int max = count_a > 0 ? 5: 
-						  count_b > 0 ? 4: 
-						  count_c > 0 ? 3: 
-						  count_d > 0 ? 2: 
-						  count_e > 0 ? 1: 0;
-						  
-				// str 포함된 문자 중에서 가장 작은 점수를 min으로 지정
-				int min = count_f > 0 ? 0: 
-						  count_e > 0 ? 1:
-						  count_d > 0 ? 2:
-						  count_c > 0 ? 3: 
-						  count_b > 0 ? 4: 5;
+				// str을 char배열로 만들어 오름차순 정렬
+				char[] tmp = str.toCharArray();
+				Arrays.sort(tmp);
+
+				// 가장 큰 점수를 max로 지정
+				int max = Math.abs(tmp[0] - 'F');
+				// 가장 작은 점수를 min으로 지정
+				int min = Math.abs(tmp[tmp.length-1] - 'F');
 				
 				// 최종 점수 = total - min - max / 최고점과 최소점을 준 심사위원을 제외한 심사위원 수
-				int finalScore = ( (count_a * 5) 
-							   + (count_b * 4)
-							   + (count_c * 3)
-							   + (count_d * 2)
-							   + (count_e)
-							   - (min + max) )
-							   / (str.length() - 2);
+				int finalScore = ( total(str) - (min + max) ) / (str.length() - 2);
 				
 				// 최종 점수가 3점 이상이면 합격
 				if ( finalScore >= 3 ) {
@@ -174,10 +157,22 @@ public class Test1 {
 			
 		}
 		
-		
 		return answer;
 	}
 	
+	// 각각의 점수의 개수를 구하는 메서드
+	public static int count(String str, char ch) {
+		
+		return (int)str.chars().filter(c -> c == ch).count();
+		
+	}
+	
+	// 최종 점수를 구하는 메서드
+	public static int total(String str) {
+		
+		return (count(str, 'A') * 5) + (count(str, 'B') * 4) + (count(str, 'C') * 3) + (count(str, 'D') * 2) + count(str, 'E');
+		
+	}
 }
 
 
